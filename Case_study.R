@@ -47,7 +47,7 @@ for (j in 1:length(bins)){
   samplehist[ j ] = runif(1, min= breaks[ bins[ j ] ], max= breaks[ bins[ j ] +1 ])
 }
 
-# ustimate using Gibbs
+# estimate using Gibbs
 res <- evoigt(samplehist,S=20000)
 # mu, sigma and gamma point estimates
 orig.par<-unlist(res["posterior mean"])
