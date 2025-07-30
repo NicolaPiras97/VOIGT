@@ -5,7 +5,7 @@ Profile". The code in this version is available for case stydy reproducibility p
 
 ## Usage
 
-To run the simulations launch the .R file, which recalls the Raman_spectrum.txt data. Be sure to have installed the voigt package.
+To run the data application launch the .R file, which recalls the Raman_spectrum.txt data. Be sure to have installed the voigt package.
 
 ## Citing us
 
