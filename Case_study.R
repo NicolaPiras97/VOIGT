@@ -1,7 +1,7 @@
 require(voigt)
 
 #voigt density
-dvoigt2 <- function(x, sigma, gamma) {
+dvoigt <- function(x, sigma, gamma) {
   sapply(x, function(x0) {
     integrand <- function(xp) {
       gaussian <- (1 / (sigma * sqrt(2 * pi))) * exp(-xp^2 / (2 * sigma^2))
@@ -14,19 +14,19 @@ dvoigt2 <- function(x, sigma, gamma) {
   })
 }
 
-draman<-read.table("spettroraman.txt")
+draman<-read.table("Raman_spectrum.txt")
 x<-draman$V1
 y<-draman$V2
 plot(x,y,type="l", main="")
 
 #select peak (number four)
-datapicco = draman[(779+3):(1100-3),]
+datapeak = draman[(779+3):(1100-3),]
 plot(x,y,type="l", main="")
 abline(v=x[779],col="red")
 abline(v=x[1100],col="red")
 
-x<-datapicco[,1]
-y<-datapicco[,2]
+x<-datapeak[,1]
+y<-datapeak[,2]
 plot(x,y,type="l", main="")
 
 # centering peak and scale
@@ -48,22 +48,21 @@ for (j in 1:length(bins)){
 }
 
 # estimate using Gibbs
-res <- evoigt(samplehist,S=20000)
+res <- evoigt(samplehist)
 # mu, sigma and gamma point estimates
 orig.par<-unlist(res["posterior mean"])
 orig.par
-# w_G = sqrt(8 log 2) *sigma
-# w_L = 2* gamma 
+# w_G = sqrt(8 log 2) *sigma; w_L = 2* gamma 
 new.par<- orig.par*c(0, sqrt(8*log(2)),  2)
 names(new.par)<-c("mu","w_G", "w_L")
 new.par
 
 # plot estimated voigt versus empirical profile (original)
-plot(x+ medianx, y*A+offset,type="l",lwd=2,col="black",xlab="",ylab="")# profilo voigt
-lines(x+medianx,dvoigt2(x,sigma=orig.par[2],gamma=orig.par[3])*A+offset,col="red",lwd=3,lty=1)# profilo voigt con par stimati da evoigt
+plot(x+ medianx, y*A+offset,type="l",lwd=2,col="black",xlab="",ylab="")
+lines(x+medianx,dvoigt(x,sigma=orig.par[2],gamma=orig.par[3])*A+offset,col="red",lwd=3,lty=1)
 legend("topright",legend = c("empirical profile","fitted profile"),col = c("black", "red"),lty = c(1, 1),lwd = c(2, 3),bty = "n")
 
 # R^2 
-yhat <- dvoigt2(x,sigma=orig.par[2],gamma=orig.par[3])*A+offset
+yhat <- dvoigt(x,sigma=orig.par[2],gamma=orig.par[3])*A+offset
 my<-mean(ys*A+offset)
 1- sum(ys*A+offset-yhat)^2/sum((ys*A+offset-my)^2) 
